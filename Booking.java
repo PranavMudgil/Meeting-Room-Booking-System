@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 public class Booking{
@@ -9,7 +8,8 @@ public class Booking{
 	
 	public void availableRooms(int startTime,int endTime){
 		int[] arr= new int[20];
-		if(filledRoom.length==0)
+		int size= getLength(filledRoom);
+		if(size==0)
 		{
 			System.out.println("All the rooms are available for you(1-20)");
 			return;
@@ -18,23 +18,24 @@ public class Booking{
 		System.out.println("Available Rooms According to your time:");
 		for(MeetingRoom r:list){
 			
-			if((r.startTime>startTime&&startTime>r.endTime)||r.startTime<endTime&&endTime<r.endTime){
-				
+			if((r.startTime<=startTime&&startTime<=r.endTime)||r.startTime<=endTime&&endTime<=r.endTime||(r.startTime<=startTime&&startTime<r.endTime)&&(r.startTime<endTime&&endTime<=r.endTime)){
+				arr[r.roomId]=1;
 				 continue;
 			}else{
-				arr[r.roomId]=1;
+				arr[r.roomId]=0;
 			}
 	    }
-		for(int i=0;i<filledRoom.length;i++){
-			if(filledRoom[i]==1){
-				arr[i]=1;
-			}
-		}
+	//	for(int i=0;i<filledRoom.length;i++){
+	//		if(filledRoom[i]==1){
+		//		arr[i]=1;
+	//		}
+	//	}
 		for(int i=0;i<arr.length;i++){
 			if(arr[i]!=1){
 			System.out.print(i+" ");
 			}
 		}
+		System.out.println("\n");
 		
 	}
 	public void displayList(){
@@ -50,35 +51,72 @@ public class Booking{
 	
 	public void getTimings(int id){
 		System.out.println("Timings Availsble:");
-		int[] timeKeeping=new int[10];
+		ArrayList<Integer> timeKeeping=new ArrayList<Integer>();         					    //for Storing Starting and Ending time
+		int[] timeKeeping2=new int[10];
 		int i=0;
-		if(list.isEmpty()==true){
+		if(list.isEmpty()==true){									//if first room is being booked
 			System.out.println("You can book any time you want.");
 			return;
 		}
 	  for(MeetingRoom t:list){
-		  if(t.roomId==id){
-			  timeKeeping[i++]=t.startTime;
-			  System.out.println(t.startTime+""+t.endTime);
-			  timeKeeping[i++]=t.endTime;
-		  }
-	  } 
-	  Arrays.sort(timeKeeping);
-	  if(timeKeeping[0]!=0){
-		  System.out.println("0-"+timeKeeping[0]);
-	  }
-	  for(int j=1;j<timeKeeping.length;j=j+2){
-	 
-		 System.out.println(timeKeeping[j]+"-"+timeKeeping[j+1]);
-	  }
-	  if(timeKeeping[i]!=2400){
-		  System.out.println(timeKeeping[i]+"-2400");
-	  }
+		  if(t.roomId==id){ 									    //if Booked room is found with the same room number
+			  timeKeeping.add(t.startTime);
+			 // System.out.println(t.startTime+" "+t.endTime);
+			  timeKeeping.add(t.endTime);
+			//  System.out.println(i);
+			  
+		  }else{
+		     continue;
 	  
+		  } 
+	  }
+	  int size=timeKeeping.size();
+	  //size=size-1;
+	  System.out.println(size);
+	  if(size==0){     							 					 //if no room is booked with the same room number before
+		System.out.println("You can book any time you want.");
+		return;
+	  }else{
+	 //timeKeeping2=sort(timeKeeping);
+		  Collections.sort(timeKeeping);
+	 // System.out.print(timeKeeping[0]+" "+timeKeeping[1]+"\n");
+	  if(timeKeeping.get(0)!=0){
+		  System.out.println("0-"+timeKeeping.get(0));
+		 }
+	 // System.out.println(i);
+	  i=i-1;
+	 //System.out.println(size);
+	  if(size==2){										//if the room is booked only once before
+		  System.out.println(timeKeeping.get(1)+"-2400");
+		  return;
+	}else{												//arr={}
+		for(int j=1;j<=size-1;j=j+2){
+			if(j==size-1){
+				System.out.print(timeKeeping.get(j));
+				break;
+			}
+			System.out.println(timeKeeping.get(j)+"-"+timeKeeping.get(j+1));
+		}
+		System.out.println("-2400");
 	}
-  	  
+  }
+}
+ 
 	 public boolean bookSpecificRoom(int startTime,int endTime,int roomNo,int seats){
 		   boolean status = false;
+		   int[] arr= new int[20];
+		   for(MeetingRoom r:list){
+				
+				if((r.startTime<=startTime&&startTime<=r.endTime)||r.startTime<=endTime&&endTime<=r.endTime||(r.startTime<=startTime&&startTime<r.endTime)&&(r.startTime<endTime&&endTime<=r.endTime)){
+					arr[r.roomId]=1;
+					 continue;
+				}else{
+					arr[r.roomId]=0;
+				}
+		    }if(arr[roomNo]==1){
+		    	System.out.println("Room already booked in this time slot .Try another timings");
+		    	return status;
+		    }
 		   MeetingRoom newRoom=new MeetingRoom();
 		   newRoom.startTime=startTime ;newRoom.endTime=endTime;newRoom.roomId=roomNo;newRoom.seats=seats;
 		   list.add(newRoom);
@@ -88,24 +126,41 @@ public class Booking{
 		   }		  
 		   
 	 
-  public boolean bookRoom(int startTime,int endTime,int roomNo,int seats){
+     public boolean bookRoom(int startTime,int endTime,int roomNo,int seats){  //Checks and books room according to Given params
 	   boolean status = false;
-	   
-		if(this.filledRoom[roomNo]==1) {
+	   if(this.filledRoom[roomNo]==1) {
 		 	return status;
-		}else
-		{
+	      }else{
 			this.filledRoom[roomNo]=1;
-		}
-       
-	    MeetingRoom newRoom=new MeetingRoom();
+		   }
+        MeetingRoom newRoom=new MeetingRoom();
 	    newRoom.startTime=startTime;newRoom.endTime=endTime;newRoom.roomId=roomNo;newRoom.seats=seats;
-	   list.add(newRoom);
-	   
-	   status=true;
+	    list.add(newRoom);
+	    status=true;
 	   return status;
-	   }
+	 }
   
- 
-}
+    private int getLength(int[] arr){			// Returns no. of Elements in Integer array
+	   int count = 0;
+	   for (int i = 0; i < arr.length; i ++)
+	     if (arr[i] != 0)
+	      count ++; 
+	  return count;
+    }
 
+  
+ 	private int[] sort(int[] arr){    //Sort integer array(bubble sort)
+		int temp;
+		for(int i:arr){
+			for(int j:arr){
+				
+				if(arr[i]<arr[j]){
+					temp=arr[j];
+					arr[j]=arr[i];
+					arr[i]=temp;
+				}
+			}
+		}
+		return arr;
+    }
+}
