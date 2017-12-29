@@ -7,7 +7,7 @@ public class Booking{
 
 	
 	public void availableRooms(int startTime,int endTime){
-		int[] arr= new int[20];
+		int[] availRooms= new int[20];				//Array to store 
 		int size= getLength(filledRoom);
 		if(size==0)
 		{
@@ -19,19 +19,14 @@ public class Booking{
 		for(MeetingRoom r:list){
 			
 			if((r.startTime<=startTime&&startTime<=r.endTime)||r.startTime<=endTime&&endTime<=r.endTime||(r.startTime<=startTime&&startTime<r.endTime)&&(r.startTime<endTime&&endTime<=r.endTime)){
-				arr[r.roomId]=1;
+				availRooms[r.roomId]=1;
 				 continue;
 			}else{
-				arr[r.roomId]=0;
+				availRooms[r.roomId]=0;
 			}
 	    }
-	//	for(int i=0;i<filledRoom.length;i++){
-	//		if(filledRoom[i]==1){
-		//		arr[i]=1;
-	//		}
-	//	}
-		for(int i=0;i<arr.length;i++){
-			if(arr[i]!=1){
+		for(int i=0;i<availRooms.length;i++){
+			if(availRooms[i]!=1){
 			System.out.print(i+" ");
 			}
 		}
@@ -44,7 +39,7 @@ public class Booking{
 		        return m1.roomId-m2.roomId;
 		    }
 		});
-		for(MeetingRoom trav:list){
+		for(@SuppressWarnings("unused") MeetingRoom trav:list){
 			System.out.println(list);
 		}
 		}
@@ -52,14 +47,14 @@ public class Booking{
 	public void getTimings(int id){
 		System.out.println("Timings Availsble:");
 		ArrayList<Integer> timeKeeping=new ArrayList<Integer>();         					    //for Storing Starting and Ending time
-		int[] timeKeeping2=new int[10];
+		
 		int i=0;
-		if(list.isEmpty()==true){									//if first room is being booked
+		if(list.isEmpty()==true){				//if first room is being booked
 			System.out.println("You can book any time you want.");
 			return;
 		}
 	  for(MeetingRoom t:list){
-		  if(t.roomId==id){ 									    //if Booked room is found with the same room number
+		  if(t.roomId==id){ 					   //if Booked room is found with the same room number
 			  timeKeeping.add(t.startTime);
 			 // System.out.println(t.startTime+" "+t.endTime);
 			  timeKeeping.add(t.endTime);
@@ -73,23 +68,23 @@ public class Booking{
 	  int size=timeKeeping.size();
 	  //size=size-1;
 	  System.out.println(size);
-	  if(size==0){     							 					 //if no room is booked with the same room number before
+	  if(size==0){     							 //if no room is booked with the same room number before
 		System.out.println("You can book any time you want.");
 		return;
 	  }else{
-	 //timeKeeping2=sort(timeKeeping);
+	 
 		  Collections.sort(timeKeeping);
-	 // System.out.print(timeKeeping[0]+" "+timeKeeping[1]+"\n");
+	 
 	  if(timeKeeping.get(0)!=0){
 		  System.out.println("0-"+timeKeeping.get(0));
 		 }
-	 // System.out.println(i);
+	
 	  i=i-1;
-	 //System.out.println(size);
+	 
 	  if(size==2){										//if the room is booked only once before
 		  System.out.println(timeKeeping.get(1)+"-2400");
 		  return;
-	}else{												//arr={}
+	}else{												
 		for(int j=1;j<=size-1;j=j+2){
 			if(j==size-1){
 				System.out.print(timeKeeping.get(j));
@@ -146,21 +141,5 @@ public class Booking{
 	     if (arr[i] != 0)
 	      count ++; 
 	  return count;
-    }
-
-  
- 	private int[] sort(int[] arr){    //Sort integer array(bubble sort)
-		int temp;
-		for(int i:arr){
-			for(int j:arr){
-				
-				if(arr[i]<arr[j]){
-					temp=arr[j];
-					arr[j]=arr[i];
-					arr[i]=temp;
-				}
-			}
-		}
-		return arr;
     }
 }

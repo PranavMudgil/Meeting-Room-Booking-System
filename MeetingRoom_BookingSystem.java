@@ -67,9 +67,6 @@ public class MeetingRoom_BookingSystem {
 			  break;
 		   }
 	   }
-	    else if(userChoice1==3){
-		activeUser.displayList();
-	 	} 
 	 }
   }
 }
